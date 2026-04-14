@@ -35,7 +35,7 @@ export function Landing() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/70 dark:bg-slate-900/80 backdrop-blur-md border-b border-[#c7cbdb]/30 dark:border-slate-800 shadow-[0px_2px_8px_0px_rgba(32,41,76,0.05)] transition-colors">
         <div className="flex items-center justify-between px-10 py-4 max-w-[1200px] mx-auto">
           <div className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity" onClick={() => navigate("/")}>
-            <img src={`${import.meta.env.BASE_URL}icon.png`} alt="rezumeAI icon" className="h-8 w-8 object-contain drop-shadow-sm" />
+            <img src={`${import.meta.env.BASE_URL}icon.png`} alt="rezumeAI icon" className="h-12 w-12 object-contain drop-shadow-sm -ml-2" />
             <span className="text-[#676b89] dark:text-slate-300" style={{ fontSize: 24, fontWeight: 700, fontFamily: "'Roboto', sans-serif" }}>
               rezume<span className="text-[#0a2d67] dark:text-blue-500">AI</span>
             </span>
@@ -370,7 +370,7 @@ export function Landing() {
       <footer className="py-10 px-10 border-t border-[#c7cbdb]/40 dark:border-slate-800 dark:bg-slate-900 transition-colors">
         <div className="max-w-[1200px] mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3 opacity-70 hover:opacity-100 transition-opacity cursor-pointer" onClick={() => navigate("/")}>
-            <img src={`${import.meta.env.BASE_URL}icon.png`} alt="rezumeAI icon" className="h-6 w-6 object-contain grayscale" />
+            <img src={`${import.meta.env.BASE_URL}icon.png`} alt="rezumeAI icon" className="h-9 w-9 object-contain grayscale" />
             <span className="text-[#676b89] dark:text-slate-400" style={{ fontSize: 20, fontWeight: 700 }}>
               rezume<span className="text-[#0a2d67] dark:text-blue-500">AI</span>
             </span>
