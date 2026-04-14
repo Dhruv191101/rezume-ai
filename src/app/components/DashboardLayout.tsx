@@ -17,7 +17,7 @@ export function DashboardLayout() {
       <aside className="w-[230px] bg-white dark:bg-slate-950 flex flex-col shrink-0 shadow-[4px_0px_20px_0px_rgba(32,41,76,0.05)] z-10 border-r border-[#c7cbdb]/40 dark:border-slate-800 transition-colors">
         <div className="px-6 py-6 border-b border-[#c7cbdb]/30 dark:border-slate-800/50">
           <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <img src={`${import.meta.env.BASE_URL}icon.png`} alt="rezumeAI icon" className="h-12 w-12 object-contain drop-shadow-sm dark:brightness-110 -ml-2" />
+            <img src={`${import.meta.env.BASE_URL}icon.png`} alt="rezumeAI icon" className="h-16 w-16 scale-125 object-contain drop-shadow-sm dark:brightness-110 -ml-4" />
             <span className="text-[#0a2d67] dark:text-white" style={{ fontSize: 24, fontWeight: 700 }}>
               rezume<span className="text-[#676b89] dark:text-white/60">AI</span>
             </span>
