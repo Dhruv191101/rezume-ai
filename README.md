@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="public/icon.png" alt="rezumeAI Logo" width="120" />
+</div>
+
 # rezumeAI 🚀
 
 > **rezumeAI** is a powerful, standalone web application that seamlessly edits, modernizes, and enhances your raw resume using the power of AI.
