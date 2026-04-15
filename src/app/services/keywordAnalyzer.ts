@@ -1,19 +1,12 @@
-const ENV_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY || "";
+const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY || "";
 const MODEL = import.meta.env.VITE_OPENROUTER_MODEL || "nvidia/nemotron-3-super-120b-a12b:free";
-
-function getApiKey(): string {
-  const userKey = localStorage.getItem("rezume_openrouter_key");
-  if (userKey && userKey.trim()) return userKey.trim();
-  return ENV_API_KEY;
-}
 
 export async function analyzeMissingKeywords(
   resumeContent: string,
   jobDescription: string
 ) {
-  const API_KEY = getApiKey();
   if (!API_KEY) {
-    throw new Error("No API key configured. Please add your OpenRouter API key in Settings.");
+    throw new Error("AI service is not configured. Please contact the administrator.");
   }
 
   const prompt = `You are an expert ATS (Applicant Tracking System) and technical recruiter.
