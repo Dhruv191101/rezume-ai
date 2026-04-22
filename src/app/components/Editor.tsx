@@ -326,7 +326,7 @@ export function Editor() {
           <PanelGroup direction="horizontal" className="h-full">
             
             {/* Left Panel: Resume Editor */}
-            <Panel defaultSize={suggestions.length > 0 ? 55 : 100} minSize={40} className="flex flex-col min-h-0">
+            <Panel defaultSize={(suggestions.length > 0 || isGenerating) ? 55 : 100} minSize={40} className="flex flex-col min-h-0">
               <div className="flex-1 overflow-y-auto bg-white dark:bg-slate-900/40 transition-colors">
                 <div className="max-w-3xl mx-auto px-8 py-6 flex flex-col gap-3">
                   {resumeData.map((s) => {
@@ -395,20 +395,13 @@ export function Editor() {
                     </div>
                   )}
 
-                  {/* Generating spinner */}
-                  {isGenerating && (
-                    <div className="mt-4 rounded-xl border border-[#0a2d67]/20 dark:border-blue-500/20 bg-[#0a2d67]/[0.02] dark:bg-blue-500/[0.03] p-8 text-center">
-                      <Loader2 className="w-8 h-8 text-[#0a2d67] dark:text-blue-500 animate-spin mx-auto mb-4" />
-                      <p className="text-[#20294c] dark:text-slate-200 mb-1" style={{ fontSize: 15, fontWeight: 600 }}>Analyzing your resume...</p>
-                      <p className="text-[#676b89] dark:text-slate-400" style={{ fontSize: 13 }}>AI is finding improvements for the {targetRole} role</p>
-                    </div>
-                  )}
+
                 </div>
               </div>
             </Panel>
 
-            {/* Resize Handle — only show when suggestions exist */}
-            {suggestions.length > 0 && (
+            {/* Resize Handle — only show when suggestions exist or is generating */}
+            {(suggestions.length > 0 || isGenerating) && (
               <>
                 <PanelResizeHandle className="w-1 bg-[#e4e5ea] dark:bg-slate-800 hover:bg-[#0a2d67]/20 dark:hover:bg-blue-500/30 cursor-col-resize transition-colors flex items-center justify-center group">
                   <div className="w-0.5 h-8 bg-[#c7cbdb] dark:bg-slate-700 rounded-full group-hover:bg-[#0a2d67]/50 dark:group-hover:bg-blue-500/50 transition-colors" />
@@ -434,7 +427,51 @@ export function Editor() {
 
                   {/* Scrollable Suggestions */}
                   <div className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-3">
-                    {suggestions.map((sg, index) => (
+                    {isGenerating ? (
+                      // Skeleton Screen for Suggestions
+                      [1, 2, 3].map((i) => (
+                        <div key={i} className="rounded-xl border border-[#e4e5ea] dark:border-slate-700/50 bg-white dark:bg-slate-800/50 p-4 animate-pulse">
+                          {/* Suggestion number */}
+                          <div className="pb-2 flex items-center justify-between">
+                            <div className="w-10 h-5 bg-slate-200 dark:bg-slate-700 rounded-md"></div>
+                          </div>
+
+                          {/* Original → Improved */}
+                          <div className="pb-3">
+                            <div className="flex items-start gap-2 mb-2.5">
+                              <div className="w-4 h-4 rounded bg-red-100 dark:bg-red-900/30 flex items-center justify-center shrink-0">
+                                <X className="w-2.5 h-2.5 text-red-500/50 dark:text-red-400/50" />
+                              </div>
+                              <div className="flex-1 space-y-2 mt-1">
+                                <div className="h-2.5 bg-slate-200 dark:bg-slate-700 rounded w-full"></div>
+                                <div className="h-2.5 bg-slate-200 dark:bg-slate-700 rounded w-5/6"></div>
+                              </div>
+                            </div>
+                            <div className="flex items-start gap-2 mb-3">
+                              <div className="w-4 h-4 rounded bg-green-100 dark:bg-green-900/30 flex items-center justify-center shrink-0">
+                                <Check className="w-2.5 h-2.5 text-green-600/50 dark:text-green-400/50" />
+                              </div>
+                              <div className="flex-1 space-y-2 mt-1">
+                                <div className="h-2.5 bg-slate-200 dark:bg-slate-700 rounded w-11/12"></div>
+                                <div className="h-2.5 bg-slate-200 dark:bg-slate-700 rounded w-4/5"></div>
+                              </div>
+                            </div>
+                            
+                            {/* Reason */}
+                            <div className="bg-[#f8f9fb] dark:bg-slate-900/40 rounded-lg px-3 py-2 mb-3 h-8 flex items-center">
+                              <div className="h-2.5 bg-slate-200 dark:bg-slate-700 rounded w-3/4"></div>
+                            </div>
+
+                            {/* Action buttons */}
+                            <div className="flex gap-2">
+                              <div className="flex-1 h-8 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200/50 dark:border-green-800/20"></div>
+                              <div className="w-24 h-8 bg-[#f0f1f5] dark:bg-slate-800 rounded-lg border border-[#e4e5ea] dark:border-slate-700"></div>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                    suggestions.map((sg, index) => (
                       <div
                         key={sg.id}
                         onMouseEnter={() => { setHoveredSuggestion(sg.id); setActiveSuggestion(sg.id); }}
@@ -515,10 +552,10 @@ export function Editor() {
                           )}
                         </div>
                       </div>
-                    ))}
+                    )))}
 
                     {/* Accept All / Dismiss All */}
-                    {pending > 1 && (
+                    {!isGenerating && pending > 1 && (
                       <div className="flex gap-2 pt-2 pb-4 sticky bottom-0 bg-gradient-to-t from-[#fafbfd] dark:from-slate-950/80 via-[#fafbfd] dark:via-slate-950/60 to-transparent pt-6">
                         <button
                           onClick={() => suggestions.filter(s => s.accepted === null).forEach(s => handleAction(s.id, true))}

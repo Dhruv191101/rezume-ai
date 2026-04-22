@@ -73,21 +73,35 @@ ${resumeContent}
     
     // Attempt to parse JSON array carefully
     try {
-        // Strip markdown code fences if present
         let cleaned = content.trim();
-        if (cleaned.startsWith("\`\`\`")) {
-          cleaned = cleaned.replace(/^\`\`\`(?:json)?\n?/, "").replace(/\n?\`\`\`$/, "");
+        // Strip markdown code fences if present (```json ... ```)
+        if (cleaned.startsWith("```")) {
+          cleaned = cleaned.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
         }
-        const parsed = JSON.parse(cleaned);
-        if (Array.isArray(parsed)) {
-            return parsed;
-        } else if (parsed.suggestions && Array.isArray(parsed.suggestions)) {
-            return parsed.suggestions;
+        // Fallback: extract first JSON array or object via regex
+        try {
+          const parsed = JSON.parse(cleaned);
+          if (Array.isArray(parsed)) return parsed;
+          if (parsed.suggestions && Array.isArray(parsed.suggestions)) return parsed.suggestions;
+          return [];
+        } catch {
+          // Try extracting JSON from mixed text
+          const arrMatch = cleaned.match(/\[[\s\S]*\]/);
+          if (arrMatch) {
+            const parsed = JSON.parse(arrMatch[0]);
+            if (Array.isArray(parsed)) return parsed;
+          }
+          const objMatch = cleaned.match(/\{[\s\S]*\}/);
+          if (objMatch) {
+            const parsed = JSON.parse(objMatch[0]);
+            if (parsed.suggestions && Array.isArray(parsed.suggestions)) return parsed.suggestions;
+            return [parsed];
+          }
+          throw new Error("No valid JSON found in response");
         }
-        return [];
     } catch(e) {
-        console.error("Failed to parse JSON", content);
-        throw new Error("Invalid response format from AI.");
+        console.error("Failed to parse AI response:", content);
+        throw new Error("Invalid response format from AI. Please try again.");
     }
   } catch (error) {
     console.error("Error calling OpenRouter API:", error);

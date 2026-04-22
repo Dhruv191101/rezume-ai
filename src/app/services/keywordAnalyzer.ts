@@ -78,16 +78,26 @@ ${jobDescription}
     const content = data.choices[0].message.content;
     
     try {
-        // Strip markdown code fences if present
         let cleaned = content.trim();
-        if (cleaned.startsWith("\`\`\`")) {
-          cleaned = cleaned.replace(/^\`\`\`(?:json)?\n?/, "").replace(/\n?\`\`\`$/, "");
+        // Strip markdown code fences if present (```json ... ```)
+        if (cleaned.startsWith("```")) {
+          cleaned = cleaned.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
         }
-        const parsed = JSON.parse(cleaned);
-        return parsed;
+        try {
+          const parsed = JSON.parse(cleaned);
+          return parsed;
+        } catch {
+          // Try extracting JSON object from mixed text
+          const objMatch = cleaned.match(/\{[\s\S]*\}/);
+          if (objMatch) {
+            const parsed = JSON.parse(objMatch[0]);
+            return parsed;
+          }
+          throw new Error("No valid JSON found in response");
+        }
     } catch(e) {
-        console.error("Failed to parse JSON", content);
-        throw new Error("Invalid response format from AI.");
+        console.error("Failed to parse AI response:", content);
+        throw new Error("Invalid response format from AI. Please try again.");
     }
   } catch (error) {
     console.error("Error analyzing keywords:", error);
